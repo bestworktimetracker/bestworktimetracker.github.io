@@ -509,6 +509,48 @@ document.querySelectorAll('[data-range]').forEach(b => { b.onclick = () => { set
 setRange('month');
 route();
 loadEmployees();
+  
+// Favicon
+  (function() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 64;
+    canvas.height = 64;
+    const ctx = canvas.getContext('2d');
+
+    // Синий скругленный фон (#231f92)
+    ctx.fillStyle = '#231f92';
+    ctx.beginPath();
+    ctx.roundRect(0, 0, 64, 64, 16);
+    ctx.fill();
+
+    // Настройки белых линий часов (масштаб из вашего viewBox 24x24 в 64x64)
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 5.3; // 2 * (64/24)
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    // Круг: cx="12" cy="12" r="9"
+    ctx.beginPath();
+    ctx.arc(32, 32, 24, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Стрелки: M12 7v5l3 2
+    ctx.beginPath();
+    ctx.moveTo(32, 18.67);
+    ctx.lineTo(32, 32);
+    ctx.lineTo(40, 37.33);
+    ctx.stroke();
+
+    // Установка иконки во вкладку
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.head.appendChild(link);
+    }
+    link.type = 'image/png';
+    link.href = canvas.toDataURL('image/png');
+  })();
 </script>
 </body>
 </html>
