@@ -136,3 +136,24 @@ test('HTTP: the home page is served as HTML, not as a JSON buffer', async () => 
   } finally { srv.closeAllConnections(); srv.close(); }
 });
 
+test('HTTP: the favicon is served as SVG and as a real PNG', async () => {
+  const { store } = make();
+  const srv = createServer(store).listen(0);
+  await new Promise(r => srv.once('listening', r));
+  const base = `http://127.0.0.1:${srv.address().port}`;
+  try {
+    const svg = await fetch(base + '/favicon.svg');
+    assert.equal(svg.status, 200);
+    assert.match(svg.headers.get('content-type'), /image\/svg\+xml/);
+    assert.ok((await svg.text()).includes('<svg'));
+    for (const url of ['/favicon.ico', '/favicon.png', '/apple-touch-icon.png']) {
+      const res = await fetch(base + url);
+      const bytes = Buffer.from(await res.arrayBuffer());
+      assert.equal(res.status, 200, url);
+      assert.equal(res.headers.get('content-type'), 'image/png');
+      assert.deepEqual([...bytes.subarray(0, 4)], [0x89, 0x50, 0x4e, 0x47], `${url} must be a PNG`);
+    }
+    const page = await (await fetch(base + '/')).text();
+    assert.ok(page.includes('rel="icon" href="/favicon.svg"'), 'the page must link the favicon');
+  } finally { srv.closeAllConnections(); srv.close(); }
+});
