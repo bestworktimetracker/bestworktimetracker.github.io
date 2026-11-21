@@ -28,6 +28,7 @@ including a timer that was running when the server stopped.
 - **Timers**: start and stop a timer with a task description. One active timer per employee.
 - **Report**: pick a period (from/to, plus Today / 7 days / This month) and see entries per employee with totals.
   The period is shared with Overview, which shows it under its title with a "Change period" link.
+- Browser tab icon: a white clock on indigo, as a static SVG with PNG fallbacks (also served at `/favicon.ico`).
 - Sidebar navigation: pages switch inside the same window without reloading (hash URLs such as `#report`, so the
   browser back/forward buttons and bookmarks work). The Timers item shows a count of running timers. On narrow
   screens the sidebar becomes a horizontal bar. Content is centered, and light/dark themes follow the system.
@@ -41,18 +42,19 @@ including a timer that was running when the server stopped.
 | `store.js` | all logic and storage (JSON file, atomic write via temp file + `rename`) |
 | `server.js` | HTTP API and the page |
 | `public/index.html` | the interface |
+| `public/favicon.svg`, `favicon.png`, `apple-touch-icon.png` | the browser tab icon (white clock on indigo) |
 | `test/app.test.js` | automated checks |
 
 API: `GET/POST /api/employees`, `POST /api/timers/start`, `POST /api/timers/stop`,
 `GET /api/report?from=<ms>&to=<ms>` (period `[from, to)`). Errors return `{ error, code }`.
 
-## Tests (`npm test`, 11 scenarios)
+## Tests (`npm test`, 12 scenarios)
 
 Adding an employee (empty name, duplicate) · start, stop and duration in the report · **starting a timer twice**
 (409, the first entry is untouched, starting again after stopping works) · stop without start, empty task, unknown
 employee · **empty report** (no employees; a period without entries) · boundary entries and invalid periods · a
 running timer in the report · **persistence after restart** · corrupted data file · full HTTP scenario with status
-codes · the home page is served as HTML. Time is injected (`new Store(file, now)`), so durations are asserted exactly
+codes · the home page is served as HTML · the favicon is served as SVG and PNG. Time is injected (`new Store(file, now)`), so durations are asserted exactly
 without sleeping. A real process restart was also checked manually: an employee created before stopping the server
 is still there after starting it again.
 

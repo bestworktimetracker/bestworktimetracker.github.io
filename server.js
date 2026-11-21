@@ -4,6 +4,14 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Store, AppError } = require('./store');
 
+// icons: only these whitelisted files are served from public/ (browsers also ask for /favicon.ico on their own)
+const ICONS = {
+  '/favicon.svg': ['favicon.svg', 'image/svg+xml'],
+  '/favicon.png': ['favicon.png', 'image/png'],
+  '/favicon.ico': ['favicon.png', 'image/png'],
+  '/apple-touch-icon.png': ['apple-touch-icon.png', 'image/png']
+};
+
 function createServer(store) {
   const send = (res, status, body, type = 'application/json; charset=utf-8') => {
     res.writeHead(status, { 'Content-Type': type });
@@ -21,6 +29,10 @@ function createServer(store) {
       const { pathname } = url;
       if (req.method === 'GET' && (pathname === '/' || pathname === '/index.html'))
         return send(res, 200, fs.readFileSync(path.join(__dirname, 'public', 'index.html')), 'text/html; charset=utf-8');
+      if (req.method === 'GET' && ICONS[pathname]) {
+        const [file, type] = ICONS[pathname];
+        return send(res, 200, fs.readFileSync(path.join(__dirname, 'public', file)), type);
+      }
       if (req.method === 'GET' && pathname === '/api/employees') return send(res, 200, store.listEmployees());
       if (req.method === 'POST' && pathname === '/api/employees') {
         const b = await readBody(req); return send(res, 201, store.addEmployee(b.name));
