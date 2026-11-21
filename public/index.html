@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Time tracker</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://w3.org' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23231f92'/%3E%3Ccircle cx='32' cy='32' r='16' fill='none' stroke='%23ffffff' stroke-width='4.5'/%3E%3Cpolyline points='32 22 32 32 39 37' fill='none' stroke='%23ffffff' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.png" type="image/png" sizes="64x64">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <style>
 :root{
   --bg:#eef0f7;--surface:#fff;--ink:#141a33;--muted:#667090;--line:#e1e5f0;
@@ -509,49 +510,6 @@ document.querySelectorAll('[data-range]').forEach(b => { b.onclick = () => { set
 setRange('month');
 route();
 loadEmployees();
-  
-// Favicon
-  (function() {
-    const canvas = document.createElement('canvas');
-    canvas.width = 64;
-    canvas.height = 64;
-    const ctx = canvas.getContext('2d');
-
-    // Blue rounded background (#231f92)
-    ctx.fillStyle = '#231f92';
-    ctx.beginPath();
-    ctx.roundRect(0, 0, 64, 64, 16);
-    ctx.fill();
-
-    // Setting the white lines of the clock (zoom from your viewBox 24x24 to 64x64)
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 5.3; // 2 * (64/24)
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-
-    // Circle: cx="12" cy="12" r="9"
-    ctx.beginPath();
-    ctx.arc(32, 32, 24, 0, Math.PI * 2);
-    ctx.stroke();
-
-    // Arrows: M12 7v5l3 2
-    ctx.beginPath();
-    ctx.moveTo(32, 18.67);
-    ctx.lineTo(32, 32);
-    ctx.lineTo(40, 37.33);
-    ctx.stroke();
-
-    // Installing an icon in a tab
-    let link = document.querySelector("link[rel~='icon']");
-    if (!link) {
-      link = document.createElement('link');
-      link.rel = 'icon';
-      document.head.appendChild(link);
-    }
-    link.type = 'image/png';
-    link.href = canvas.toDataURL('image/png');
-  })();
 </script>
 </body>
 </html>
-
